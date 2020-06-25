@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.player {
+  width: 80%;
+  height: 80%;
+}
+
+.big-play-toggle {
+  display: none;
+}
