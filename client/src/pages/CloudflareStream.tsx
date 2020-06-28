@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Stream } from '@cloudflare/stream-react';
+import React, { useState, useEffect, useRef, MutableRefObject } from 'react';
+import { Stream, HTMLStreamElement } from '@cloudflare/stream-react';
 import { useLocation } from 'react-router-dom';
 
 const setServiceData = async (serviceName: string, setStartTime: Function, setSrc: Function): Promise<void> => {
@@ -18,20 +18,26 @@ const CloudflareStream = () => {
   const [startTime, setStartTime] = useState(0);
   const [src, setSrc] = useState('');
   const location = useLocation();
+  const streamRef = useRef<HTMLStreamElement>(null) as MutableRefObject<HTMLStreamElement>;
 
   useEffect(() => {
+    streamRef.current?.classList.add('stream');
     const { pathname } = location;
     const serviceName = pathname.slice(pathname.lastIndexOf('/') + 1);
     
     setServiceData(serviceName, setStartTime, setSrc);
-  }, [location]);
+  }, [location, streamRef, setStartTime]);
 
   return (src !== '' &&
     <Stream
       autoplay
+      controls
+      muted
       currentTime={startTime}
       preload="auto" 
       src={src}
+      streamRef={streamRef}
+      onPause={() => streamRef.current.play()}
     />
   );
 };
